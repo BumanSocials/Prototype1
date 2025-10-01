@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Cafe Staff Manager</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+  <h2>Staff Order Manager</h2>
+  <p>Update customer order statuses here.</p>
+
+  <label>Order ID:</label>
+  <input id="orderId" placeholder="ORD-XXXX" />
+
+  <label>New Status:</label>
+  <select id="newStatus">
+    <option value="placed">Placed</option>
+    <option value="preparing">Preparing</option>
+    <option value="ready">Ready</option>
+    <option value="completed">Completed</option>
+  </select>
+
+  <button onclick="updateStatus()">Update</button>
+  <pre id="result"></pre>
+</div>
+
+<script>
+async function updateStatus() {
+  const id = document.getElementById('orderId').value.trim();
+  const status = document.getElementById('newStatus').value;
+
+  if (!id) {
+    alert("Please enter an Order ID");
+    return;
+  }
+
+  const res = await fetch(`/api/orders/${id}/status`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Admin-Key": "your-secure-key"   // 🔑 replace with your SYSTEM_API_KEY from .env
+    },
+    body: JSON.stringify({ status })
+  });
+
+  const data = await res.json();
+  document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+}
+</script>
+</body>
+</html>
