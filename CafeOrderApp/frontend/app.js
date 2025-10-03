@@ -48,6 +48,41 @@ cart = {}; renderCart();
 });
 });
 
+let trackingInterval = null;
+
+document.getElementById('startTrackingBtn').addEventListener('click', () => {
+  const orderId = document.getElementById('trackOrderId').value.trim();
+  if (!orderId) return alert("Please enter an Order ID");
+
+  // Clear any existing interval so multiple clicks don’t stack
+  if (trackingInterval) clearInterval(trackingInterval);
+
+  // Function to fetch and update order status
+  const checkStatus = () => {
+    fetch(`/api/track/${orderId}`)
+      .then(res => res.json())
+      .then(data => {
+        const el = document.getElementById('trackResult');
+        if (data.ok) {
+          el.innerHTML = `📡 Order Status: <b>${data.status}</b>`;
+        } else {
+          el.innerHTML = `❌ Order Not Found`;
+          clearInterval(trackingInterval);
+        }
+      })
+      .catch(err => {
+        document.getElementById('trackResult').innerHTML = `⚠️ Error: ${err}`;
+      });
+  };
+
+  // Run immediately
+  checkStatus();
+
+  // Start polling every 5 seconds
+  trackingInterval = setInterval(checkStatus, 5000);
+});
+
+
 document.getElementById('trackBtn').addEventListener('click', () => {
 const orderId = document.getElementById('trackId').value.trim();
 if (!orderId) return alert('Please enter your Order ID');
