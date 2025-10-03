@@ -4,7 +4,12 @@ const db = require('../firebase');
 const crypto = require('crypto');
 const { SYSTEM_API_KEY } = require('../config');
 
-let InMemoryOrders = {};
+// let InMemoryOrders = {};
+
+const store = require('../store');
+let InMemoryOrders = store.orders;
+
+
 let exportedOrderId = null;
 
 function generateOrderId() {

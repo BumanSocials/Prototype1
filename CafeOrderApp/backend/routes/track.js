@@ -2,7 +2,11 @@ const express = require('express');
 const router = express.Router();
 const db = require('../firebase');
 
-let InMemoryOrders = {};
+// let InMemoryOrders = {};
+
+const store = require('../store');
+let InMemoryOrders = store.orders;
+
 
 async function getOrder(orderId) {
 if (db) {
